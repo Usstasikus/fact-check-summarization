@@ -155,8 +155,8 @@ def evaluate_hypo(source_file, target_file, hypo_file, output_file, eval_rouge=T
         metric_names += ['rouge1', 'rouge2', 'rougeL', ]
 
     if eval_rouge and rouge_package == "files2rouge":
-        os.environ["CLASSPATH"] = "/home/ec2-user/stanford-corenlp-full-2018-10-05/stanford-corenlp-3.9.2.jar"
-
+        print("Entered files2rouge")
+        # os.environ["CLASSPATH"] = "/home/ec2-user/stanford-corenlp-full-2018-10-05/stanford-corenlp-3.9.2.jar"
         if not os.path.exists(target_file + ".tokenized"):
             # remove line seperator u'\u2028'
             with open(target_file, 'r') as f:
@@ -206,6 +206,9 @@ def evaluate_hypo(source_file, target_file, hypo_file, output_file, eval_rouge=T
         rouge2_re = re.compile(r"ROUGE-2 Average_F: ([0-9\\.]+)")
         rougeL_re = re.compile(r"ROUGE-L Average_F: ([0-9\\.]+)")
 
+        print('\n\n\n\n\n')
+        print(cmd)
+        print('\n\n\n\n\n')
         with subprocess.Popen(
                 cmd.split(),
                 stdout=subprocess.PIPE,
@@ -375,7 +378,7 @@ def make_unlikelihood_dataset(args):
             out_dir = args.output_dir
         else:
             out_dir = os.path.join(args.base_dir, args.sub_dir, 'rouge-{}-{}'.format(int(args.unlike_select_ratio * 100),
-                                                                                  int(args.unlike_select_ratio * 100)))
+                                                                                     int(args.unlike_select_ratio * 100)))
         print("Making unlikelihood dataset using {}".format(metric_choice))
     else:
         raise Exception("Please specify score_type!")
@@ -514,17 +517,17 @@ def make_unlikelihood_dataset(args):
                                                           output_source_target))
         else:
             with open(output_untarget, 'w') as out_untarget_f, \
-                open(output_target, 'w') as out_target_f, \
-                open(output_source_untarget, 'w') as out_source_f:
+                    open(output_target, 'w') as out_target_f, \
+                    open(output_source_untarget, 'w') as out_source_f:
                 for ind in selected_example_ind:
                     out_target_f.write(target_lines[ind])
                     out_source_f.write(source_lines[ind])
                     out_untarget_f.write(merged_hypos[ind] + '\n')
             print('Wrote {} examples to {} and {} and {}'.format(len(selected_example_ind), output_untarget,
-                                                          output_target, output_source_untarget))
+                                                                 output_target, output_source_untarget))
     else:
         with open(output_untarget, 'w') as out_untarget_f, \
-            open(output_source_untarget, 'w') as out_source_f:
+                open(output_source_untarget, 'w') as out_source_f:
             for ind in selected_example_ind:
                 out_source_f.write(source_lines[ind])
                 out_untarget_f.write(merged_hypos[ind] + '\n')
@@ -539,7 +542,7 @@ def convert_hypo_to_jsonl(args):
         print('Processing ', hypo_filename)
         out_file = h + '.hypo'
         with open(h, 'r') as f_in, \
-            open(out_file, 'w') as f_out:
+                open(out_file, 'w') as f_out:
             for line in f_in:
                 d = {
                     'summaries': [line.strip(),],
@@ -572,7 +575,7 @@ def filter_qas_dataset_lm_score(args):
         else:
             output_file = qas_file + '_filtered'
         with open(qas_file, 'r') as qas_f, \
-             open(output_file, 'w') as output_f:
+                open(output_file, 'w') as output_f:
             for line in qas_f:
                 filtered_qa_dict_list = []
                 qa_dict_list = json.loads(line.strip())
@@ -802,7 +805,6 @@ def select_unlikelihood_hypos_lm_score(args):
 def compute_hypos_lm_score(args):
     '''
     compute the QUALS (eval_ns-ns) and save it for each hypothesis
-
     :param args:
     :return:
     '''
@@ -907,7 +909,7 @@ if __name__ == '__main__':
             hypo_filename = os.path.basename(h)
             os.rename(h, h + '.ent')
             with open(h, 'w') as f_out, \
-                open(h + '.ent', 'r') as f_in:
+                    open(h + '.ent', 'r') as f_in:
                 for line_in in f_in:
                     line_split = line_in.split('strutConnector')
                     if len(line_split) > 1:

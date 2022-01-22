@@ -12,7 +12,6 @@ import glob
 
 """
 Run locally with multiple-GPUs
-
 Stop job when an error occurs in any subprocesses
 """
 
@@ -59,14 +58,14 @@ def _run_process(job_idx, *, args, ckp_file, output_prefix, offsets):
             if count % bsz == 0:
                 with torch.no_grad():
                     hypotheses_batch, score_batch, _ = bart.sample(slines,
-                                                                beam=args.beam,
-                                                                lenpen=args.lenpen,
-                                                                max_len_b=args.max_len,
-                                                                min_len=args.min_len,
-                                                                sampling=args.sampling,
-                                                                sampling_topk=args.sampling_topk,
-                                                                sampling_topp=args.sampling_topp,
-                                                                )
+                                                                   beam=args.beam,
+                                                                   lenpen=args.lenpen,
+                                                                   max_len_b=args.max_len,
+                                                                   min_len=args.min_len,
+                                                                   sampling=args.sampling,
+                                                                   sampling_topk=args.sampling_topk,
+                                                                   sampling_topp=args.sampling_topp,
+                                                                   )
                 for hypothesis in hypotheses_batch:
                     out_text_f.write(hypothesis + '\n')
                 out_text_f.flush()
@@ -77,14 +76,14 @@ def _run_process(job_idx, *, args, ckp_file, output_prefix, offsets):
         if slines != []:
             with torch.no_grad():
                 hypotheses_batch, score_batch, _ = bart.sample(slines,
-                                                            beam=args.beam,
-                                                            lenpen=args.lenpen,
-                                                            max_len_b=args.max_len,
-                                                            min_len=args.min_len,
-                                                            sampling=args.sampling,
-                                                            sampling_topk=args.sampling_topk,
-                                                            sampling_topp=args.sampling_topp,
-                                                            )
+                                                               beam=args.beam,
+                                                               lenpen=args.lenpen,
+                                                               max_len_b=args.max_len,
+                                                               min_len=args.min_len,
+                                                               sampling=args.sampling,
+                                                               sampling_topk=args.sampling_topk,
+                                                               sampling_topp=args.sampling_topp,
+                                                               )
             for hypothesis in hypotheses_batch:
                 out_text_f.write(hypothesis + '\n')
             out_text_f.flush()

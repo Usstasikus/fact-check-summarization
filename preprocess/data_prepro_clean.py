@@ -23,7 +23,7 @@ SKIPTEXT = [
     "LinkedIn",
     "Copy this link",
     "These are external links and will open in a new window",
-            ]
+]
 SKIP_TEXT_LOWER = [t.lower() for t in SKIPTEXT]
 
 TRACKING_ENTITY_LIST = ['PERSON', 'FAC', 'GPE', 'ORG', 'NORP', 'LOC', 'EVENT']
@@ -109,11 +109,11 @@ def extract_text_xsum(input_file, filter_level):
             for line in input_f:
                 line = line.strip()
                 if line:
-                    if line == "[XSUM]INTRODUCTION[XSUM]":
+                    if line == "[SN]FIRST-SENTENCE[SN]":
                         intro = True
                         restbody = False
                         continue
-                    if line == "[XSUM]RESTBODY[XSUM]":
+                    if line == "[SN]RESTBODY[SN]":
                         intro = False
                         restbody = True
                         continue
@@ -213,7 +213,7 @@ def preprocess_cnndm(raw_dir="~/cnndm-data-dir", dataset_suffix='',
             output_source = dtype + dataset_suffix + '.source'
             output_target = dtype + dataset_suffix + '.target'
         with open(os.path.join(output_directory, output_source), 'w') as source_f, \
-            open(os.path.join(output_directory, output_target), 'w') as target_f:
+                open(os.path.join(output_directory, output_target), 'w') as target_f:
             for orgfileid in split_dict[dtype]:
                 count += 1
                 source_text, target_text = extract_text_cnndm(os.path.join(raw_dir, 'raw_stories', orgfileid), filter_level)
@@ -253,8 +253,8 @@ def preprocess_newsroom(filter_level=0, raw_dir='~/newsroom-data-dir', output_di
         # if source.startswith("'Image ") or \
         # source.startswith('"Photo: ') or \
         if (source.startswith('Image ') and source[6] in "0123456789") or \
-            source.startswith("Photo: ") or \
-            '"params":' in source :
+                source.startswith("Photo: ") or \
+                '"params":' in source :
             if is_print:
                 print(source)
             return True
@@ -267,9 +267,9 @@ def preprocess_newsroom(filter_level=0, raw_dir='~/newsroom-data-dir', output_di
                 print(summary)
             return True
         if re.search(re.escape('on FoxNews.com'), summary, re.IGNORECASE) or \
-            re.search(re.escape('from FoxNews.com'), summary, re.IGNORECASE) or \
-            re.search(re.escape('Collection of all USATODAY.com'), summary, re.IGNORECASE) or \
-            re.search(re.escape('washingtonpost.com'), summary, re.IGNORECASE):
+                re.search(re.escape('from FoxNews.com'), summary, re.IGNORECASE) or \
+                re.search(re.escape('Collection of all USATODAY.com'), summary, re.IGNORECASE) or \
+                re.search(re.escape('washingtonpost.com'), summary, re.IGNORECASE):
             if is_print:
                 print(summary)
             return True
@@ -291,7 +291,7 @@ def preprocess_newsroom(filter_level=0, raw_dir='~/newsroom-data-dir', output_di
         output_target = split_type + '.target'
         num_lines = sum(1 for _ in jsonl.open(in_file, gzip=True))
         with open(os.path.join(output_dir, output_source), 'w') as source_f, \
-            open(os.path.join(output_dir, output_target), 'w') as target_f:
+                open(os.path.join(output_dir, output_target), 'w') as target_f:
             with jsonl.open(in_file, gzip=True) as f:
                 for entry in tqdm(f, total=num_lines):
                     if entry['summary'] and entry['text']:
@@ -350,10 +350,10 @@ def preprocess_xsum(raw_dir="~/xsum-data-dir", dataset_suffix='',
             output_source = dtype + dataset_suffix + '.source'
             output_target = dtype + dataset_suffix + '.target'
         with open(os.path.join(output_directory, output_source), 'w') as source_f, \
-            open(os.path.join(output_directory, output_target), 'w') as target_f:
+                open(os.path.join(output_directory, output_target), 'w') as target_f:
             for orgfileid in split_dict[dtype]:
                 count += 1
-                source_text, target_text = extract_text_xsum(os.path.join(raw_dir, "xsum-extracts-from-downloads", orgfileid+'.data'), filter_level)
+                source_text, target_text = extract_text_xsum(os.path.join(raw_dir, "xsum-extracts-from-downloads", orgfileid+'.summary'), filter_level)
                 if select_example(nlp, source_text, target_text, filter_level):
                     source_f.write(source_text + '\n')
                     target_f.write(target_text + '\n')
@@ -468,7 +468,7 @@ def _format_question_answers_bpe(bpe, source, question, answer, special_token, m
     if len(answer_bpe) + len(question_bpe) > max_len - 2:
         return source_bpe[:max_len-1], None, None
     return source_bpe[:max_len-1], bpe.decode(source_bpe[:max_len-1]), \
-        question_bpe[:max_len-len(answer_bpe)-2] + [special_token, ] + answer_bpe
+           question_bpe[:max_len-len(answer_bpe)-2] + [special_token, ] + answer_bpe
 
 
 def preprecess_QA_generation_newsqa_squad(input_dir,

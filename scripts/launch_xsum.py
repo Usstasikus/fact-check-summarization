@@ -71,10 +71,10 @@ if __name__ == '__main__':
         train_instance_type = 'local'
         train_instance_count = 1
 
-        train_path = "<data-bin location>"
-        init_path = "<pretrained bart.large location>"
-        output_path = '<model output location>'
-        ngpus = 4 # modify based on the number of GPUs on the local machine.
+        train_path = "XSUM/XSum/XSum-Dataset/processed-data/data_bin"
+        init_path = "/home/svdon/coursepaper/data/bart_ckpts/bart.large"
+        output_path = "/home/svdon/coursepaper/data/bart_ckpts/bart_xsum/"
+        ngpus = 1 # modify based on the number of GPUs on the local machine.
 
         cmd = ['python', 'train.py', ]
         cmd += ['--save_dir', output_path]
@@ -92,8 +92,8 @@ if __name__ == '__main__':
     else:
         train_instance_type = 'ml.p3.16xlarge'
         train_instance_count = 1
-        train_path = "s3://path/to/data_bin"
-        init_path = "s3://path/to/bart.large"
+        train_path = "XSUM/XSum/XSum-Dataset/processed-data/data_bin"
+        init_path = "/home/svdon/coursepaper/data/bart_ckpts/bart.large"
         image_name = "<docker-image-name>"
         output_path = "s3://path/to/output"
         role = "<sagemaker-execution-role>"
