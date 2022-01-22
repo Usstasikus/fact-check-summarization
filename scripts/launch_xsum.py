@@ -71,7 +71,7 @@ if __name__ == '__main__':
         train_instance_type = 'local'
         train_instance_count = 1
 
-        train_path = "XSUM/XSum/XSum-Dataset/processed-data/data_bin"
+        train_path = "/home/svdon/coursepaper/data/XSUM/XSum/XSum-Dataset/processed-data/data_bin"
         init_path = "/home/svdon/coursepaper/data/bart_ckpts/bart.large"
         output_path = "/home/svdon/coursepaper/data/bart_ckpts/bart_xsum/"
         ngpus = 1 # modify based on the number of GPUs on the local machine.
