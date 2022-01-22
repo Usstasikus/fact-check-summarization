@@ -77,17 +77,17 @@ if __name__ == '__main__':
 
     args_dict.pop('ngpus', None)
 
-    # try:
-    #     prefix = '/opt/ml/'
-    #     param_path = os.path.join(prefix, 'input/config/hyperparameters.json')
-    #     # Read in any hyperparameters that the user passed with the training job
-    #     with open(param_path, 'r') as tc:
-    #         training_params = json.load(tc)
+    try:
+        prefix = '/opt/ml/'
+        param_path = os.path.join(prefix, 'input/config/hyperparameters.json')
+        # Read in any hyperparameters that the user passed with the training job
+        with open(param_path, 'r') as tc:
+            training_params = json.load(tc)
 
-    #     for k,v in training_params.items():
-    #         args_dict[k] = v
-    # except:
-    #     print("hyperparameters.json not found! Probably running without Sagemaker!")
+        for k,v in training_params.items():
+            args_dict[k] = v
+    except:
+        print("hyperparameters.json not found! Probably running without Sagemaker!")
     training_args = [train_dir,] + convert_args_dict_to_list(args_dict) + unparsed
 
     cli_main(training_args)
