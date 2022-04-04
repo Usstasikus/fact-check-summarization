@@ -79,10 +79,10 @@ if __name__ == '__main__':
         train_instance_type = 'local'
         train_instance_count = 1
 
-        train_path = "<data-bin location>"
-        init_path = "<pretrained bart.large location>"
-        output_path = '<model output location>'
-        ngpus = 4 # modify based on the number of GPUs on the local machine.
+        train_path = "/home/svdon/data/CNN/stories_files/processed-data/entity_augment/data_bin"
+        init_path = "/home/svdon/data/checkpoints/bart_xsum"
+        output_path = '/home/svdon/data/checkpoints/bart_xsum_cnndm'
+        ngpus = 1 # modify based on the number of GPUs on the local machine.
 
         cmd = ['python', 'train.py', ]
         cmd += ['--save_dir', output_path]

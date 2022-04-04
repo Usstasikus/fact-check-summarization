@@ -1029,22 +1029,35 @@ class SMInference(object):
                         for res in pool_results:
                             print('Done with process {}'.format(res))
                 else:
-                    with ProcessPool(ncpus=self.num_workers) as pool:
-                        process_func = lambda job_idx: _run_qa_gen_process_local(
-                            job_idx,
+                    if self.num_workers > 1:
+                        with ProcessPool(ncpus=self.num_workers) as pool:
+                            process_func = lambda job_idx: _run_qa_gen_process_local(
+                                job_idx,
+                                input_source_file=source_file,
+                                out_text_file=os.path.join(self.args.output_dir, "{}.qas{}".format(output_prefix, job_idx)),
+                                offset=offsets[job_idx],
+                                end=offsets[job_idx + 1],
+                                checkpoint_dir=self.checkpoint_dir,
+                                ckp_file=self.ckp_file,
+                                bin_dir=self.bin_dir,
+                                args=self.args
+                            )
+                            pool_results = pool.uimap(process_func, list(range(self.num_workers)))
+                            for res in pool_results:
+                                print('Done with process {}'.format(res))
+                            self.concat_temp_files(output_prefix+'.qas')
+                    else:
+                        _run_qa_gen_process_local(
+                            0,
                             input_source_file=source_file,
-                            out_text_file=os.path.join(self.args.output_dir, "{}.qas{}".format(output_prefix, job_idx)),
-                            offset=offsets[job_idx],
-                            end=offsets[job_idx + 1],
+                            out_text_file=os.path.join(self.args.output_dir, "{}.qas".format(output_prefix)),
+                            offset=offsets[0],
+                            end=offsets[1],
                             checkpoint_dir=self.checkpoint_dir,
                             ckp_file=self.ckp_file,
                             bin_dir=self.bin_dir,
                             args=self.args
                         )
-                        pool_results = pool.uimap(process_func, list(range(self.num_workers)))
-                        for res in pool_results:
-                            print('Done with process {}'.format(res))
-            self.concat_temp_files(output_prefix+'.qas')
             print('Written to {}'.format(output_prefix + '.qas'))
             if not self.args.iterate_files:
                 break
@@ -1211,8 +1224,8 @@ if __name__ == '__main__':
 
     parser.add_argument('--iterate_files', type=str2bool, nargs='?', const=True, default=False)
 
-    parser.add_argument('--encoder_json', type=str, default="/home/ec2-user/fairseq/encoder.json")
-    parser.add_argument('--vocab_bpe', type=str, default="/home/ec2-user/fairseq/vocab.bpe")
+    parser.add_argument('--encoder_json', type=str, default="/home/svdon/data/BPE/encoder.json")
+    parser.add_argument('--vocab_bpe', type=str, default="/home/svdon/data/BPE/vocab.bpe")
 
     # for q_gen, specify the subdirectories for generated hypothesis and answer spans, under the base_dir
     parser.add_argument('--source_dir', type=str, default="")

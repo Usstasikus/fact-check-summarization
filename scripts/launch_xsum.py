@@ -57,7 +57,7 @@ if __name__ == '__main__':
         "fp16": "True",
         "update-freq": 4,
         "skip-invalid-size-inputs-valid-test": "True",
-        "num-workers": 4,
+        "num-workers": 1,
         "find-unused-parameters": "True",
         "log-format": "simple",
         "log-interval": 100,
@@ -71,12 +71,12 @@ if __name__ == '__main__':
         train_instance_type = 'local'
         train_instance_count = 1
 
-        train_path = "/home/svdon/coursepaper/data/XSUM/XSum/XSum-Dataset/processed-data/data_bin"
-        init_path = "/home/svdon/coursepaper/data/bart_ckpts/bart.large"
-        output_path = "/home/svdon/coursepaper/data/bart_ckpts/bart_xsum/"
+        train_path = "/home/svdon/data/xsum/processed-data/data_bin"
+        init_path = "/home/svdon/data/BART_large/bart.large"
+        output_path = "/home/svdon/data/checkpoints/bart_xsum"
         ngpus = 1 # modify based on the number of GPUs on the local machine.
 
-        cmd = ['python', 'train.py', ]
+        cmd = ['/home/svdon/.virtualenvs/fact_check_sum/bin/python3', 'train.py', ]
         cmd += ['--save_dir', output_path]
         cmd += ['--train', train_path]
         cmd += ['--pretrained_path', init_path]

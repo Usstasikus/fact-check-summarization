@@ -169,21 +169,31 @@ def main():
             continue
         output_prefix = args.input_file[:-6] + 'ckp' + ckp_file[10:-3] + '.' + args.output_suffix
 
-        with ProcessPool(ncpus=args.num_workers) as pool:
-            process_func = lambda job_idx: _run_process(
-                job_idx,
+        if args.num_workers > 1:
+            with ProcessPool(ncpus=args.num_workers) as pool:
+                process_func = lambda job_idx: _run_process(
+                    job_idx,
+                    args=args,
+                    ckp_file=ckp_file,
+                    output_prefix=output_prefix,
+                    offsets=offsets
+                )
+                pool_results = pool.uimap(process_func, list(range(args.num_workers)))
+                for res in pool_results:
+                    print('Done with process {}'.format(res))
+            concat_temp_files(args, output_prefix + '.hypo')
+            print('Written to {}'.format(output_prefix + '.hypo'))
+            pool.close()
+            pool.clear()
+        else:
+            _run_process(
+                0,
                 args=args,
                 ckp_file=ckp_file,
                 output_prefix=output_prefix,
                 offsets=offsets
             )
-            pool_results = pool.uimap(process_func, list(range(args.num_workers)))
-            for res in pool_results:
-                print('Done with process {}'.format(res))
-        concat_temp_files(args, output_prefix + '.hypo')
-        print('Written to {}'.format(output_prefix + '.hypo'))
-        pool.close()
-        pool.clear()
+            print('Written to {}'.format(output_prefix + '.hypo'))
 
 if __name__ == '__main__':
     main()
